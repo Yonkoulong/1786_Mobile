@@ -49,8 +49,8 @@ public class EditorTripFragment extends Fragment {
     String riskAssessmentTrip;
     String descriptionTrip;
 
-    String[] listTripName = {"Bungalow","Townhome", "House", "Flat", "Apartment", "Cabin"};
-    String[] listTripDestination = {"Single", "Double", "Triple", "Quad", "Queen", "King", "Studio"};
+    String[] listTripName = {"Conference","Client meeting", "Holiday", "Visiting", "Discovery", "Interview"};
+    String[] listTripDestination = {"Manchester United", "Arsenal", "Tottenham Hotspur", "Liverpool", "Chelsea", "Manchester City"};
 
     AutoCompleteTextView autoCompleteTripName;
     AutoCompleteTextView autoCompleteDestination;
@@ -62,7 +62,7 @@ public class EditorTripFragment extends Fragment {
     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd YYY HH:mm:ss");
 
     RadioGroup radioGroup;
-
+    int radioId;
     public static EditorTripFragment newInstance() {
         return new EditorTripFragment();
     }
@@ -82,7 +82,6 @@ public class EditorTripFragment extends Fragment {
         ab.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24);
         setHasOptionsMenu(true);
 
-        mViewModel = new ViewModelProvider(this).get(EditorTripViewModel.class);
         binding= FragmentEditorTripBinding.inflate(inflater,container,false);
         tripDao = new TripDao(getContext());
 
@@ -121,8 +120,8 @@ public class EditorTripFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_yes:
-                        break;
                     case R.id.radio_no:
+                        radioId = checkedId;
                         break;
                 }
             }
@@ -186,6 +185,7 @@ public class EditorTripFragment extends Fragment {
                 t -> {
                     binding.autoCompleteTripName.setText(tripName);
                     binding.autoCompleteDestination.setText(destinationTrip);
+                    binding.riskAssessment.check(checkRadioId(riskAssessmentTrip));
                     binding.editDateTime.setText(dateTrip);
 
                     binding.description.setText(descriptionTrip);
@@ -241,10 +241,11 @@ public class EditorTripFragment extends Fragment {
         String nameOfTheTrip = binding.autoCompleteTripName.getText().toString();
         String destinationOfTheTrip = binding.autoCompleteDestination.getText().toString();
         String dateOfTheTrip = binding.editDateTime.getText().toString();
+        String riskAssessmentTrip = String.valueOf(radioId);
         String descriptionTrip = binding.description.getText().toString();
 
         Trip updateTrip
-                = new Trip(tripId != null ? tripId: Constants.NEW_TRIP_ID,nameOfTheTrip,destinationOfTheTrip, dateOfTheTrip,"true", descriptionTrip);
+                = new Trip(tripId != null ? tripId: Constants.NEW_TRIP_ID,nameOfTheTrip,destinationOfTheTrip, dateOfTheTrip,riskAssessmentTrip, descriptionTrip);
         if(tripId == Constants.NEW_TRIP_ID){
             tripDao.insert(updateTrip);
         }
@@ -296,6 +297,13 @@ public class EditorTripFragment extends Fragment {
             Navigation.findNavController(getView()).navigate(R.id.expensesOfTripFragment, bundle);
         };
         return;
+    }
+
+    private int checkRadioId(String radioId) {
+        if(radioId == null || radioId.equals("true")) {
+            radioId = "0";
+        }
+        return Integer.parseInt(radioId);
     }
 }
 

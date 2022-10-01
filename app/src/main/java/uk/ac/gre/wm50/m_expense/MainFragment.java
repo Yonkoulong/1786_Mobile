@@ -31,7 +31,6 @@ public class MainFragment extends Fragment implements TripListAdapter.ListTripLi
 
     private FragmentMainBinding binding;
     private TripListAdapter adapter;
-    ArrayList<Trip> listItem;
     private SearchView searchTrip;
     TripDao tripDao;
 
