@@ -27,6 +27,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -49,7 +51,7 @@ public class EditorExpenseFragment extends Fragment {
     String dateExpense;
     String commentsExpense;
 
-    String[] listTypeOfExpense = {"Lunch", "BreakFast", "Dinner"};
+    String[] listTypeOfExpense = {"Travel", "Food", "Lodging", "Internet Access", "Ground Transportation"};
     AutoCompleteTextView autoCompleteTypeExpenses;
     ArrayAdapter<String> adapterTypeExpenses;
 
@@ -105,7 +107,36 @@ public class EditorExpenseFragment extends Fragment {
         Button buttonSave = binding.save;
         buttonSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                saveAndReturn();
+                if(this.validate()) {
+                    saveAndReturn();
+                }
+            }
+
+            private boolean validate() {
+                TextInputLayout inputLayoutTypeOfExpense = binding.typeOfExpense;
+                AutoCompleteTextView textViewTypeOfExpense = binding.autoCompleteTypeExpenses;
+
+                EditText amountOfExpenseEditText = binding.amountOfTheExpense;
+                EditText dateTimeEditText = binding.editDateTime;
+
+                boolean isValidated = true;
+
+                if(textViewTypeOfExpense.getText().toString().isEmpty()) {
+                    inputLayoutTypeOfExpense.setError("Expense is required!");
+                    isValidated = false;
+                }
+
+                if(Double.valueOf(amountOfExpenseEditText.getText().toString()) < 1) {
+                    amountOfExpenseEditText.setError("Amount is required!");
+                    isValidated = false;
+                }
+
+                if(dateTimeEditText.getText().toString().isEmpty()) {
+                    dateTimeEditText.setError("Date is required!");
+                    isValidated = false;
+                }
+
+                return isValidated;
             }
         });
 

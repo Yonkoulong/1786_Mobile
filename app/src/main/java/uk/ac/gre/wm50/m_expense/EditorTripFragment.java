@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -131,7 +132,7 @@ public class EditorTripFragment extends Fragment {
         Button buttonSave = binding.save;
         buttonSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(this.validate() == true) {
+                if(this.validate()) {
                     saveAndReturn();
                 }
             }
@@ -144,28 +145,28 @@ public class EditorTripFragment extends Fragment {
                 AutoCompleteTextView textViewDestination = binding.autoCompleteDestination;
 
                 EditText dateTimeEditText = binding.editDateTime;
-                EditText descriptionEditText = binding.description;
 
                 boolean isValidated = true;
 
                 if(textViewTripName.getText().toString().isEmpty()) {
-                    inputLayoutTripName.setError("You must select a trip name");
+                    inputLayoutTripName.setError("Trip name is required!");
                     isValidated = false;
-                } else {
-                    inputLayoutTripName.setErrorEnabled(false);
                 }
 
                 if(textViewDestination.getText().toString().isEmpty()) {
-                    inputLayoutDestination.setError("You must select a destination");
+                    inputLayoutDestination.setError("Destination is required!");
                     isValidated = false;
-                } else {
-                    inputLayoutDestination.setErrorEnabled(false);
                 }
 
-//                if(dateTimeEditText.getText().toString().isEmpty()) {
-//                    dateTimeEditText.setError("You must select date and time");
-//                    isValidated = false;
-//                }
+                if(dateTimeEditText.getText().toString().isEmpty()) {
+                    dateTimeEditText.setError("Date is required!");
+                    isValidated = false;
+                }
+
+                if(radioGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(app.getApplicationContext(), "Please select risk assessment", Toast.LENGTH_LONG).show();
+                    isValidated = false;
+                }
 
                 return isValidated;
             }
@@ -301,7 +302,7 @@ public class EditorTripFragment extends Fragment {
 
     private int checkRadioId(String radioId) {
         if(radioId == null || radioId.equals("true")) {
-            radioId = "0";
+            radioId = "-1";
         }
         return Integer.parseInt(radioId);
     }

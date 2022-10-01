@@ -100,7 +100,7 @@ public class TripDao {
     }
 
     public void search(String text) {
-        String query = "Select * from trip WHERE nameOfTheTrip LIKE '%"+text+"%'";
+        String query = "Select * from trip WHERE nameOfTheTrip LIKE '%"+text+"%' OR destination LIKE '%"+text+"%' OR dateOfTheTrip LIKE '%"+text+"%'";
         tripList.setValue(get(query));
     }
 }
